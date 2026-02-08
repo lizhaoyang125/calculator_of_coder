@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="程序员专用计算器 - 支持多进制转换和位运算">
+  <title>Programmer Calculator</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/calculator.css">
+</head>
+<body>
+  <div class="container">
+    <div class="calculator">
+      <!-- 标题栏 -->
+      <header class="calculator-header">
+        <h1>🧮 Programmer Calculator</h1>
+        <div class="header-controls">
+          <div class="type-selector-wrapper">
+            <label for="type-selector">Type:</label>
+            <select id="type-selector">
+              <option value="INT8">INT8</option>
+              <option value="UINT8">UINT8</option>
+              <option value="INT16">INT16</option>
+              <option value="UINT16">UINT16</option>
+              <option value="INT32" selected>INT32</option>
+              <option value="UINT32">UINT32</option>
+              <option value="INT64">INT64</option>
+              <option value="UINT64">UINT64</option>
+            </select>
+          </div>
+          <div class="base-selector-wrapper">
+            <label for="base-selector">Input:</label>
+            <select id="base-selector">
+              <option value="16">HEX</option>
+              <option value="10" selected>DEC</option>
+              <option value="2">BIN</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <!-- 表格式多进制显示区 -->
+      <div class="display-section-table">
+        <table class="expression-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>HEX</th>
+              <th>DEC</th>
+              <th>BIN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="value1-row" class="value-row editing">
+              <td class="label">Value 1</td>
+              <td class="hex-cell" data-value="value1-hex">0x00000000</td>
+              <td class="dec-cell" data-value="value1-dec">0</td>
+              <td class="bin-cell" data-value="value1-bin">0000 0000 0000 0000 0000 0000 0000 0000</td>
+            </tr>
+            <tr id="operator-row" class="operator-row">
+              <td class="label">Operator</td>
+              <td class="operator-cell" colspan="3"></td>
+            </tr>
+            <tr id="value2-row" class="value-row">
+              <td class="label">Value 2</td>
+              <td class="hex-cell" data-value="value2-hex"></td>
+              <td class="dec-cell" data-value="value2-dec"></td>
+              <td class="bin-cell" data-value="value2-bin"></td>
+            </tr>
+            <tr id="result-row" class="result-row">
+              <td class="label">Result</td>
+              <td class="hex-cell result" data-value="result-hex"></td>
+              <td class="dec-cell result" data-value="result-dec"></td>
+              <td class="bin-cell result" data-value="result-bin"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 范围显示 -->
+      <div id="range-display" class="range-display">
+        Range: -2147483648 ~ 2147483647
+      </div>
+
+      <!-- 按钮区 -->
+      <div class="button-grid" id="button-grid">
+        <!-- 位运算按钮行 -->
+        <button class="btn btn-bitop" data-op="<<" title="Left Shift">&lt;&lt;</button>
+        <button class="btn btn-bitop" data-op=">>" title="Right Shift">&gt;&gt;</button>
+        <button class="btn btn-bitop" data-op="&" title="AND">&amp;</button>
+        <button class="btn btn-bitop" data-op="|" title="OR">|</button>
+        <button class="btn btn-bitop" data-op="^" title="XOR">^</button>
+
+        <!-- 功能按钮行 -->
+        <button class="btn btn-bitop" data-op="~" title="NOT">~</button>
+        <button class="btn btn-function" data-action="clear" title="Clear (C)">AC</button>
+        <button class="btn btn-function" data-action="delete" title="Delete (Backspace)">DEL</button>
+        <button class="btn btn-operator" data-op="/" title="Divide">/</button>
+        <button class="btn btn-operator" data-op="*" title="Multiply">*</button>
+
+        <!-- 数字和十六进制字母行1 -->
+        <button class="btn btn-number" data-num="7">7</button>
+        <button class="btn btn-number" data-num="8">8</button>
+        <button class="btn btn-number" data-num="9">9</button>
+        <button class="btn btn-hex" data-num="A">A</button>
+        <button class="btn btn-operator" data-op="-" title="Subtract">-</button>
+
+        <!-- 数字和十六进制字母行2 -->
+        <button class="btn btn-number" data-num="4">4</button>
+        <button class="btn btn-number" data-num="5">5</button>
+        <button class="btn btn-number" data-num="6">6</button>
+        <button class="btn btn-hex" data-num="B">B</button>
+        <button class="btn btn-operator" data-op="+" title="Add">+</button>
+
+        <!-- 数字和十六进制字母行3 -->
+        <button class="btn btn-number" data-num="1">1</button>
+        <button class="btn btn-number" data-num="2">2</button>
+        <button class="btn btn-number" data-num="3">3</button>
+        <button class="btn btn-hex" data-num="C">C</button>
+        <button class="btn btn-operator" data-op="%" title="Modulo">%</button>
+
+        <!-- 数字和十六进制字母行4 -->
+        <button class="btn btn-number" data-num="0">0</button>
+        <button class="btn btn-hex" data-num="D">D</button>
+        <button class="btn btn-hex" data-num="E">E</button>
+        <button class="btn btn-hex" data-num="F">F</button>
+        <button class="btn btn-function" data-action="equals" title="Equals (Enter)">=</button>
+      </div>
+
+      <!-- 历史记录区 -->
+      <div class="history-section">
+        <div class="history-header">
+          <h3>History</h3>
+          <div class="history-controls">
+            <select id="history-base-selector" class="history-base-selector" title="Display format">
+              <option value="2">BIN</option>
+              <option value="10" selected>DEC</option>
+              <option value="16">HEX</option>
+            </select>
+            <button id="history-toggle" class="btn-icon" title="Toggle History">
+              <span class="icon">▼</span>
+            </button>
+            <button id="history-clear" class="btn-icon" title="Clear History">
+              <span class="icon">✕</span>
+            </button>
+          </div>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </div>
+
+      <!-- 快捷键提示 -->
+      <div class="shortcuts-hint">
+        <details>
+          <summary>Keyboard Shortcuts</summary>
+          <ul>
+            <li><kbd>H</kbd> - Switch to HEX</li>
+            <li><kbd>D</kbd> - Switch to DEC</li>
+            <li><kbd>B</kbd> - Switch to BIN</li>
+            <li><kbd>C</kbd> / <kbd>Esc</kbd> - Clear</li>
+            <li><kbd>Enter</kbd> - Calculate</li>
+            <li><kbd>Backspace</kbd> - Delete</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+      <p>Programmer Calculator | Support BIN, DEC, HEX | Bit Operations</p>
+    </footer>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+/**
+ * Layout Styles
+ * 基础布局和通用样式
+ */
+
+/* 重置和基础样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-ui);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 容器 */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 计算器主体 */
+.calculator {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 标题栏 */
+.calculator-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.calculator-header h1 {
+  font-size: var(--font-size-title);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.type-selector-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.type-selector-wrapper label {
+  font-size: var(--font-size-normal);
+  color: var(--text-secondary);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.base-selector-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.base-selector-wrapper label {
+  font-size: var(--font-size-normal);
+  color: var(--text-secondary);
+}
+
+#type-selector,
+#base-selector {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-normal);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+#type-selector:hover,
+#base-selector:hover {
+  border-color: var(--accent-color);
+}
+
+#type-selector:focus,
+#base-selector:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+}
+
+/* 显示区域 */
+.display-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* 范围显示 */
+.range-display {
+  text-align: center;
+  font-size: var(--font-size-small);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+  font-family: var(--font-mono);
+}
+
+/* 页脚 */
+.footer {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-muted);
+  font-size: var(--font-size-small);
+}
+
+/* 快捷键提示 */
+.shortcuts-hint {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.shortcuts-hint details {
+  cursor: pointer;
+}
+
+.shortcuts-hint summary {
+  font-size: var(--font-size-small);
+  color: var(--text-secondary);
+  user-select: none;
+  padding: var(--spacing-xs);
+}
+
+.shortcuts-hint summary:hover {
+  color: var(--accent-color);
+}
+
+.shortcuts-hint ul {
+  list-style: none;
+  margin-top: var(--spacing-sm);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-xs);
+}
+
+.shortcuts-hint li {
+  font-size: var(--font-size-small);
+  color: var(--text-secondary);
+  padding: var(--spacing-xs);
+}
+
+.shortcuts-hint kbd {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  color: var(--text-primary);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--spacing-md);
+  }
+
+  .calculator {
+    padding: var(--spacing-md);
+  }
+
+  .calculator-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .calculator-header h1 {
+    font-size: var(--font-size-large);
+  }
+
+  .shortcuts-hint ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: var(--spacing-sm);
+  }
+
+  .calculator {
+    padding: var(--spacing-sm);
+  }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-button);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-button-hover);
+}
