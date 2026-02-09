@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="图片对比工具 - 对比两张图片的差异并标记出来">
+  <title>图片对比 - Developer Tools</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/image-diff.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 返回主页按钮 -->
+    <nav class="page-nav">
+      <a href="index.html" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        返回工具箱
+      </a>
+    </nav>
+
+    <!-- 页面标题 -->
+    <header class="page-header">
+      <h1>🖼️ 图片对比</h1>
+      <p>上传两张图片，对比它们的差异</p>
+    </header>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+      <!-- 图片上传区域 -->
+      <div class="upload-section">
+        <div class="upload-group">
+          <div class="upload-box" id="upload1">
+            <div class="upload-icon">📤</div>
+            <p class="upload-text">点击上传图片 1</p>
+            <p class="upload-hint">或拖拽图片到此处</p>
+            <input type="file" id="file1" accept="image/*" class="file-input">
+          </div>
+          <div class="image-preview" id="preview1">
+            <img id="img1" alt="图片 1">
+            <button class="remove-btn" id="remove1" title="移除图片">✕</button>
+          </div>
+        </div>
+
+        <div class="compare-divider">
+          <span class="vs-badge">VS</span>
+        </div>
+
+        <div class="upload-group">
+          <div class="upload-box" id="upload2">
+            <div class="upload-icon">📤</div>
+            <p class="upload-text">点击上传图片 2</p>
+            <p class="upload-hint">或拖拽图片到此处</p>
+            <input type="file" id="file2" accept="image/*" class="file-input">
+          </div>
+          <div class="image-preview" id="preview2">
+            <img id="img2" alt="图片 2">
+            <button class="remove-btn" id="remove2" title="移除图片">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 差异设置 -->
+      <div class="settings-section">
+        <div class="setting-item">
+          <label for="tolerance">差异容忍度:</label>
+          <input type="range" id="tolerance" min="0" max="100" value="10" class="slider">
+          <span id="tolerance-value" class="value-display">10</span>
+        </div>
+        <div class="setting-item">
+          <label for="highlight-color">差异颜色:</label>
+          <input type="color" id="highlight-color" value="#ff0000" class="color-picker">
+        </div>
+        <div class="setting-item">
+          <label for="opacity">差异透明度:</label>
+          <input type="range" id="opacity" min="0" max="100" value="70" class="slider">
+          <span id="opacity-value" class="value-display">70%</span>
+        </div>
+        <div class="setting-item">
+          <label for="circle-radius">圆圈半径:</label>
+          <input type="range" id="circle-radius" min="5" max="50" value="10" class="slider">
+          <span id="circle-radius-value" class="value-display">10</span>
+        </div>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="action-buttons">
+        <button id="compare-btn" class="btn btn-primary" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          开始对比
+        </button>
+        <button id="clear-btn" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          清除
+        </button>
+      </div>
+    </div>
+
+    <!-- 对比结果区域 -->
+    <div class="result-section" id="result-section" style="display: none;">
+      <div class="result-header">
+        <h2>对比结果</h2>
+        <div class="result-stats">
+          <span class="stat-item" id="diff-percent">差异: 0%</span>
+          <span class="stat-item" id="diff-pixels">差异像素: 0</span>
+        </div>
+      </div>
+
+      <!-- 查看模式切换 -->
+      <div class="view-modes">
+        <button class="view-btn active" data-mode="side">并排对比</button>
+        <button class="view-btn" data-mode="slider">滑块对比</button>
+        <button class="view-btn" data-mode="diff">差异标记</button>
+      </div>
+
+      <!-- 对比显示区域 -->
+      <div class="comparison-display">
+        <!-- 并排对比 -->
+        <div class="view-side" id="view-side">
+          <div class="side-by-side">
+            <div class="side-image">
+              <h3>图片 1</h3>
+              <img id="side-img1" alt="图片 1">
+            </div>
+            <div class="side-image">
+              <h3>图片 2</h3>
+              <img id="side-img2" alt="图片 2">
+            </div>
+          </div>
+        </div>
+
+        <!-- 滑块对比 -->
+        <div class="view-slider" id="view-slider" style="display: none;">
+          <div class="slider-container" id="slider-container">
+            <div class="slider-image slider-image-1">
+              <img id="slider-img1" alt="图片 1">
+            </div>
+            <div class="slider-image slider-image-2" id="slider-image-2">
+              <img id="slider-img2" alt="图片 2">
+            </div>
+            <div class="slider-handle" id="slider-handle">
+              <div class="handle-line"></div>
+              <div class="handle-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 差异标记 -->
+        <div class="view-diff" id="view-diff" style="display: none;">
+          <div class="diff-canvas-wrapper">
+            <canvas id="diff-canvas"></canvas>
+          </div>
+          <div class="diff-legend">
+            <span class="legend-item">
+              <span class="legend-color" style="background: rgba(255, 0, 0, 0.7); border-radius: 50%;"></span>
+              差异区域（圆圈标记）
+            </span>
+            <span class="legend-item">
+              <span class="legend-color" style="background: rgba(200, 200, 200, 0.5);"></span>
+              原图背景
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 下载按钮 -->
+      <div class="download-section">
+        <button id="download-btn" class="btn btn-download">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          下载差异图
+        </button>
+      </div>
+    </div>
+
+    <!-- 提示信息 -->
+    <div class="info-section">
+      <h3>使用说明</h3>
+      <ul>
+        <li>上传两张要对比的图片（支持 PNG、JPG、GIF 等格式）</li>
+        <li>调整差异容忍度来控制差异检测的灵敏度</li>
+        <li>调整圆圈半径来控制差异标记圈的大小</li>
+        <li>选择不同的查看模式来分析图片差异</li>
+        <li>使用滑块对比模式可以直观地看到两张图片的过渡</li>
+        <li>差异标记模式会用圆圈圈出两张图片不同的区域</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Canvas 用于图像处理 -->
+  <canvas id="canvas1" style="display: none;"></canvas>
+  <canvas id="canvas2" style="display: none;"></canvas>
+
+  <!-- JavaScript -->
+  <script src="js/image-diff.js" type="module"></script>
+</body>
+</html>

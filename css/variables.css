@@ -48,6 +48,7 @@
   --font-size-large: 20px;
   --font-size-display: 24px;
   --font-size-title: 28px;
+  --font-size-hero: 48px;
 
   /* 间距 */
   --spacing-xs: 4px;
@@ -55,11 +56,13 @@
   --spacing-md: 12px;
   --spacing-lg: 16px;
   --spacing-xl: 24px;
+  --spacing-2xl: 48px;
 
   /* 圆角 */
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
+  --radius-full: 9999px;
 
   /* 阴影 */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
